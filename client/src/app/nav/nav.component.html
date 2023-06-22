@@ -1,0 +1,83 @@
+<nav class="navbar navbar-expand-lg bg-body-tertiary">
+  <div class="container">
+    <a class="navbar-brand" href="#">Dating App</a>
+    <button
+      class="navbar-toggler"
+      type="button"
+      data-bs-toggle="collapse"
+      data-bs-target="#navbarSupportedContent"
+      aria-controls="navbarSupportedContent"
+      aria-expanded="false"
+      aria-label="Toggle navigation"
+    >
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav me-auto mb-2 mb-lg-0" *ngIf="currentUser$ | async">
+        <li class="nav-item">
+          <a class="nav-link active" aria-current="page" href="#">Matches</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="#">Lists</a>
+        </li>
+
+        <li class="nav-item">
+          <a class="nav-link">Messages</a>
+        </li>
+      </ul>
+
+      <div class="btn-group" *ngIf="currentUser$ | async" dropdown>
+        <button
+          id="button-basic"
+          dropdownToggle
+          type="button"
+          class="btn btn-primary dropdown-toggle text-decoration-none"
+          aria-controls="dropdown-basic"
+        >
+          Welcome user<span class="caret"></span>
+        </button>
+        <ul
+          id="dropdown-basic"
+          *dropdownMenu
+          class="dropdown-menu mt-3"
+          role="menu"
+          aria-labelledby="button-basic"
+        >
+          <li role="menuitem">
+            <a class="dropdown-item" href="#">Edit Profile</a>
+          </li>
+          <li role="menuitem">
+            <a class="dropdown-item" (click)="logout()">Logout</a>
+          </li>
+        </ul>
+      </div>
+
+      <form
+        *ngIf="!(currentUser$ | async)"
+        #loginForm="ngForm"
+        class="d-flex"
+        role="search"
+        (ngSubmit)="login()"
+        autocomplete="off"
+      >
+        <input
+          name="username"
+          [(ngModel)]="model.username"
+          class="form-control me-2"
+          type="text"
+          placeholder="Username"
+          aria-label="Search"
+        />
+        <input
+          class="form-control me-2"
+          name="password"
+          [(ngModel)]="model.password"
+          type="password"
+          placeholder="Password"
+          aria-label="password"
+        />
+        <button class="btn btn-outline-success" type="submit">Login</button>
+      </form>
+    </div>
+  </div>
+</nav>
