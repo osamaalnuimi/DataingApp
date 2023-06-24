@@ -1,6 +1,8 @@
-<nav class="navbar navbar-expand-lg bg-body-tertiary">
+<nav class="navbar navbar-expand-lg bg-primary">
   <div class="container">
-    <a class="navbar-brand" href="#">Dating App</a>
+    <a class="navbar-brand" routerLink="/" routerLinkActive="active"
+      >Dating App</a
+    >
     <button
       class="navbar-toggler"
       type="button"
@@ -13,20 +15,33 @@
       <span class="navbar-toggler-icon"></span>
     </button>
     <div class="collapse navbar-collapse" id="navbarSupportedContent">
-      <ul class="navbar-nav me-auto mb-2 mb-lg-0" *ngIf="currentUser$ | async">
-        <li class="nav-item">
-          <a class="nav-link active" aria-current="page" href="#">Matches</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" href="#">Lists</a>
-        </li>
+      <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+        <ng-container *ngIf="currentUser$ | async">
+          <li class="nav-item">
+            <a
+              class="nav-link active"
+              aria-current="page"
+              routerLink="/members"
+              routerLinkActive="active"
+            >
+              Matches
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" routerLink="/lists" routerLinkActive="active"
+              >Lists</a
+            >
+          </li>
 
-        <li class="nav-item">
-          <a class="nav-link">Messages</a>
-        </li>
+          <li class="nav-item">
+            <a class="nav-link" routerLink="/messages" routerLinkActive="active"
+              >Messages</a
+            >
+          </li>
+        </ng-container>
       </ul>
 
-      <div class="btn-group" *ngIf="currentUser$ | async" dropdown>
+      <div class="btn-group" *ngIf="currentUser$ | async as user" dropdown>
         <button
           id="button-basic"
           dropdownToggle
@@ -34,7 +49,7 @@
           class="btn btn-primary dropdown-toggle text-decoration-none"
           aria-controls="dropdown-basic"
         >
-          Welcome user<span class="caret"></span>
+          Welcome {{ user.userName | titlecase }}<span class="caret"></span>
         </button>
         <ul
           id="dropdown-basic"
@@ -76,7 +91,7 @@
           placeholder="Password"
           aria-label="password"
         />
-        <button class="btn btn-outline-success" type="submit">Login</button>
+        <button class="btn btn-success" type="submit">Login</button>
       </form>
     </div>
   </div>

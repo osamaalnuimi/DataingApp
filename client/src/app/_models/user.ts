@@ -1,4 +1,4 @@
 export interface ICurrentUser {
-  username: string;
+  userName: string;
   tokenKey: string;
 }
