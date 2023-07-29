@@ -10,17 +10,10 @@ import { IUser } from '../app.component';
 export class HomeComponent implements OnInit {
   registerMode = false;
   users: IUser[] = new Array();
-  constructor(private _http: HttpClient) {}
-  ngOnInit(): void {
-    this.getUsers();
-  }
+  constructor() {}
+  ngOnInit(): void {}
   registerToggle(): void {
     this.registerMode = !this.registerMode;
-  }
-  getUsers(): void {
-    this._http.get('https://localhost:7178/api/users').subscribe((response) => {
-      this.users = response as IUser[];
-    });
   }
   cancelRegistterMode(event: boolean): void {
     this.registerMode = event;

@@ -2,7 +2,7 @@ import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 
 import { HTTP_INTERCEPTORS, HttpClientModule } from '@angular/common/http';
-import { FormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 import { AppRoutingModule } from './app-routing.module';
@@ -17,6 +17,14 @@ import { RegisterComponent } from './register/register.component';
 import { SharedModule } from './_modules/shared.module';
 import { ErroInterceptor } from './_interceptor/erro.interceptor';
 import { NotFoundComponent } from './not-found/not-found.component';
+import { JwtInterceptor } from './_interceptor/jwt.interceptor';
+import { MemberCardComponent } from './members/member-card/member-card.component';
+import { LoadingInterceptor } from './_interceptor/loading.interceptor';
+import { MemberEditComponent } from './members/member-edit/member-edit.component';
+import { DatePickerComponent } from './_forms/date-picker/date-picker.component';
+import { TextInputComponent } from './_forms/text-input/text-input.component';
+import { PhotoEditorComponent } from './members/photo-editor/photo-editor.component';
+import { PaginationModule } from 'ngx-bootstrap/pagination';
 @NgModule({
   declarations: [
     AppComponent,
@@ -28,6 +36,11 @@ import { NotFoundComponent } from './not-found/not-found.component';
     ListsComponent,
     MessagesComponent,
     NotFoundComponent,
+    MemberCardComponent,
+    MemberEditComponent,
+    DatePickerComponent,
+    TextInputComponent,
+    PhotoEditorComponent,
   ],
   imports: [
     BrowserModule,
@@ -35,10 +48,14 @@ import { NotFoundComponent } from './not-found/not-found.component';
     AppRoutingModule,
     HttpClientModule,
     FormsModule,
+    ReactiveFormsModule,
     SharedModule,
+    PaginationModule.forRoot(),
   ],
   providers: [
     { provide: HTTP_INTERCEPTORS, useClass: ErroInterceptor, multi: true },
+    { provide: HTTP_INTERCEPTORS, useClass: JwtInterceptor, multi: true },
+    { provide: HTTP_INTERCEPTORS, useClass: LoadingInterceptor, multi: true },
   ],
   bootstrap: [AppComponent],
 })
