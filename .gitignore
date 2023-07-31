@@ -479,3 +479,6 @@ API/appsettings.json
 client/.vscode
 *.db
 API/datingapp.db
+API/datingapp.db
+API/datingapp.db-shm
+.gitignore
