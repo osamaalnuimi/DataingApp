@@ -25,6 +25,7 @@ import { DatePickerComponent } from './_forms/date-picker/date-picker.component'
 import { TextInputComponent } from './_forms/text-input/text-input.component';
 import { PhotoEditorComponent } from './members/photo-editor/photo-editor.component';
 import { PaginationModule } from 'ngx-bootstrap/pagination';
+import { MemberMessagesComponent } from './members/member-messages/member-messages.component';
 @NgModule({
   declarations: [
     AppComponent,
@@ -41,6 +42,7 @@ import { PaginationModule } from 'ngx-bootstrap/pagination';
     DatePickerComponent,
     TextInputComponent,
     PhotoEditorComponent,
+    MemberMessagesComponent,
   ],
   imports: [
     BrowserModule,

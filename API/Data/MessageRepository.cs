@@ -10,39 +10,42 @@ namespace API.Data
 {
     public class MessageRepository : IMessageRepository
     {
-        private readonly DataContext _contenxt;
+        private readonly DataContext _context;
         private readonly IMapper _mapper;
         public MessageRepository(DataContext context, IMapper mapper)
         {
-            _contenxt = context;
+            _context = context;
             _mapper = mapper;
         }
         public void AddMessage(Message message)
         {
-            _contenxt.Messages.Add(message);
+            _context.Messages.Add(message);
         }
 
         public void DeleteMessage(Message message)
         {
-            _contenxt.Messages.Remove(message);
+            _context.Messages.Remove(message);
         }
 
         public async Task<Message> GetMessage(int id)
         {
-            return await _contenxt.Messages.FindAsync(id);
+            return await _context.Messages.FindAsync(id);
         }
 
         public async Task<PagedList<MessageDto>> GetMessagesForUser(MessageParams messageParams)
         {
-            var query = _contenxt.Messages
+            var query = _context.Messages
                 .OrderByDescending(x => x.MessageSent)
                 .AsQueryable();
 
             query = messageParams.Container switch
             {
-                "Inbox" => query.Where(u => u.RecipientUsername == messageParams.Username),
-                "Outbox" => query.Where(u => u.SenderUsername == messageParams.Username),
-                _ => query.Where(u => u.RecipientUsername == messageParams.Username && u.DateRead == null)
+                "Inbox" => query.Where(u => u.Recipient.UserName == messageParams.Username &&
+                u.RecipientDeleted == false),
+                "Outbox" => query.Where(u => u.Sender.UserName == messageParams.Username &&
+                    u.SenderDeleted == false),
+                _ => query.Where(u => u.Recipient.UserName == messageParams.Username
+                    && u.RecipientDeleted == false && u.DateRead == null)
             };
 
             var messages = query.ProjectTo<MessageDto>(_mapper.ConfigurationProvider);
@@ -52,19 +55,20 @@ namespace API.Data
 
         public async Task<IEnumerable<MessageDto>> GetMessageThread(string currentUsername, string recipientUsername)
         {
-            var messages = await _contenxt.Messages
-            .Include(u => u.Sender).ThenInclude(p => p.Photos)
-            .Include(u => u.Recipient).ThenInclude(p => p.Photos)
-            .Where(
-                m => m.RecipientUsername == currentUsername &&
+            var messages = await _context.Messages
+                .Include(u => u.Sender).ThenInclude(p => p.Photos)
+                .Include(u => u.Recipient).ThenInclude(p => p.Photos)
+                .Where(
+                    m => m.RecipientUsername == currentUsername && m.RecipientDeleted == false &&
                     m.SenderUsername == recipientUsername ||
                     m.RecipientUsername == recipientUsername &&
-                    m.SenderUsername == currentUsername
-            )
-            .OrderByDescending(m => m.MessageSent)
-            .ToListAsync();
+                    m.SenderUsername == currentUsername && m.SenderDeleted == false
+                )
+                .OrderBy(m => m.MessageSent)
+                .ToListAsync();
 
-            var unreadMessages = messages.Where(m => m.DateRead == null && m.RecipientUsername == currentUsername).ToList();
+            var unreadMessages = messages.Where(m => m.DateRead == null
+                && m.RecipientUsername == currentUsername).ToList();
 
             if (unreadMessages.Any())
             {
@@ -72,7 +76,8 @@ namespace API.Data
                 {
                     message.DateRead = DateTime.UtcNow;
                 }
-                await _contenxt.SaveChangesAsync();
+
+                await _context.SaveChangesAsync();
             }
 
             return _mapper.Map<IEnumerable<MessageDto>>(messages);
@@ -80,7 +85,7 @@ namespace API.Data
 
         public async Task<bool> SaveAllAsync()
         {
-            return await _contenxt.SaveChangesAsync() > 0;
+            return await _context.SaveChangesAsync() > 0;
         }
     }
 }
