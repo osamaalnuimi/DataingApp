@@ -35,12 +35,18 @@ export class AccountService {
       })
     );
   }
-  setCurrentUser(user: User): void {
+  setCurrentUser(user: User) {
+    user.roles = [];
+    const roles = this.getDecodedToken(user.tokenKey).role;
+    Array.isArray(roles) ? (user.roles = roles) : user.roles.push(roles);
     localStorage.setItem('user', JSON.stringify(user));
     this._currentUserSource.next(user);
   }
   logout(): void {
     this._currentUserSource.next(null);
     localStorage.removeItem('user');
+  }
+  getDecodedToken(token: string) {
+    return JSON.parse(atob(token.split('.')[1]));
   }
 }

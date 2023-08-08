@@ -24,7 +24,7 @@ export class MembersService {
     private http: HttpClient,
     private accountService: AccountService
   ) {
-    this.accountService.currentUser$.pipe(take(1)).subscribe({
+    this.accountService.currentUser$.pipe(take(2)).subscribe({
       next: (user) => {
         if (user) {
           this.userParams = new UserParams(user);

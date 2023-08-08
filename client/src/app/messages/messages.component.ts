@@ -46,7 +46,7 @@ export class MessagesComponent implements OnInit {
     });
   }
 
-  pageChanged(event: any) {
+  pageChanged(event: PageChangedEvent) {
     if (this.pageNumber !== event.page) {
       this.pageNumber = event.page;
       this.loadMessages();
